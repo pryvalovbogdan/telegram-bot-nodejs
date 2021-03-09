@@ -1,26 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api');
-console.log('Bot have been started');
-const token = '1560965662:AAExJkGoMuUMnzBgGuVgsRkEdqDWB-fb0q0';
-const { debug, getAnagram } = require('./helpers');
+const { debug, getAnagram } = require('./helpers/helpers');
+const { token, endpoints, telegramBotOptions } = require('./constants/constans');
 const fs = require('fs');
 
-const bot = new TelegramBot(token, {
-  polling: {
-    interval: 300,
-    autoStart: true,
-    params: {
-      timeout: 10,
-    }
-  },
-});
-
-const endpoints = [ { name: '/start', description: 'start to work with bot'},
-  { name: '/anagram word', description: 'put any word to get anagram of it'},
-  { name: '/helppizdyk', description: 'to see all commands'},
-  { name: '/porabodyashitb', description: 'work on debug'},
-  { name: '/endpizdesh', description: 'stop working'},
-  { name: '/inlinekeyboard', description: 'check inline'},
-];
+const bot = new TelegramBot(token, telegramBotOptions);
 
 bot.onText(/\/start/, msg => {
   const { id } = msg.chat;
@@ -168,8 +151,8 @@ bot.onText(/\/anagram (.+)/, (msg, data) => {
   const anagrams = getAnagram(data[1]);
   const html = `
     <strong>Anagrams from webster dictionary: </strong>
-    ${anagrams.length ? anagrams.map(item => `<b>${item}</b> `) : 'There is no matching'}
-  <strong>/helppizdyk</strong>
+      ${anagrams.length ? anagrams.map(item => `<b>${item}</b> `) : 'There is no matching'}
+    <strong>/helppizdyk</strong>
     `;
 
   bot.sendAnimation(id, 'https://media1.giphy.com/media/xTiTnpZBALuuuwyzw4/giphy.gif', {

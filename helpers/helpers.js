@@ -1,11 +1,8 @@
 const dictionary = require('websters-english-dictionary');
+
 const debug = obj => JSON.stringify(obj, null, 4);
 
-const factorial = num => {
-	if (num === 0) return 1;
-
-	return num * factorial(num - 1);
-};
+const factorial = num => num === 0 ?  1 :  num * factorial(num - 1);
 
 const getAnagram = word => {
 	console.log('word', word);
