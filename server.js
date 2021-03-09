@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { debug, getAnagram } = require('./helpers/helpers');
-const { token, endpoints, telegramBotOptions } = require('./constants/constans');
+const { token, endpoints, telegramBotOptions, links } = require('./constants/constans');
 const fs = require('fs');
 
 const bot = new TelegramBot(token, telegramBotOptions);
@@ -14,7 +14,23 @@ bot.onText(/\/start/, msg => {
       <b>${item.name}</b><b> - ${item.description}</b>`)}
     `;
 
-  bot.sendAnimation(id, 'https://i.pinimg.com/originals/e1/10/fd/e110fde3397a6562f298bbb523720145.gif', {
+  bot.sendAnimation(id, links.start, {
+    caption: html,
+    duration: 0,
+    parse_mode: 'HTML',
+  });
+});
+
+bot.onText(/\/anagram (.+)/, (msg, data) => {
+  const { id } = msg.chat;
+  const anagrams = getAnagram(data[1]);
+  const html = `
+    <strong>Anagrams from webster dictionary: </strong>
+      ${anagrams.length ? anagrams.map(item => `<b>${item}</b> `) : 'There is no matching'}
+    <strong>/helppizdyk</strong>
+    `;
+
+  bot.sendAnimation(id, links.anagram, {
     caption: html,
     duration: 0,
     parse_mode: 'HTML',
@@ -45,19 +61,19 @@ bot.onText(/\/endpizdesh/, msg => {
 bot.onText(/\/porabodyashitb/, msg => {
   const { id } = msg.chat;
 
-  bot.sendAnimation(id, 'https://media1.tenor.com/images/a37427a9b3ef5d3d121c9092be96543a/tenor.gif?itemid=5606830', {
+  bot.sendAnimation(id, links.porabodyashitb, {
     caption: `Zavarivay 4ayek mi na4inaem /helppizdyk`,
     duration: 0,
   });
 });
 
-bot.onText(/\/checkpizduk/, msg => {
+bot.onText(/\/areyouhere/, msg => {
   const { id } = msg.chat;
   bot.sendMessage(id, 'Are you Pizduk...', {
     reply_markup: {
       keyboard: [
         [{
-          text: 'Gde pizduk?',
+          text: 'Where are you?',
           request_location: true,
         }],
         ['yes', 'no'],
@@ -144,22 +160,6 @@ bot.on('message', (msg) => {
     default:
       break;
   }
-});
-
-bot.onText(/\/anagram (.+)/, (msg, data) => {
-  const { id } = msg.chat;
-  const anagrams = getAnagram(data[1]);
-  const html = `
-    <strong>Anagrams from webster dictionary: </strong>
-      ${anagrams.length ? anagrams.map(item => `<b>${item}</b> `) : 'There is no matching'}
-    <strong>/helppizdyk</strong>
-    `;
-
-  bot.sendAnimation(id, 'https://media1.giphy.com/media/xTiTnpZBALuuuwyzw4/giphy.gif', {
-    caption: html,
-    duration: 0,
-    parse_mode: 'HTML',
-  });
 });
 
 bot.on('polling_error', (error) => {
